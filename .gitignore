@@ -1,16 +1,3 @@
-# Environnement Python
-__pycache__/
-*.pyc
-venv/
-.env
-
-# Modèle ML (trop gros pour GitHub)
-models/*.pkl
-
-# Fichiers OS (Spécifique Mac)
-.DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
+# Fichiers temporaires matplotlib
+*.png
+!figures/*.png
