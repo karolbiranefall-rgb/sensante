@@ -12,6 +12,18 @@ app = FastAPI(
     description="Assistant pre-diagnostic medical pour le Senegal",
     version="0.2.0"
 )
+from fastapi.middleware.cors import CORSMiddleware
+
+# ... après la création de app = FastAPI() ...
+
+# Autoriser les requêtes depuis le frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],      # En dev : accepte toutes les sources (ex: localhost:3000)
+    allow_credentials=True,
+    allow_methods=["*"],      # Autorise POST, GET, etc.
+    allow_headers=["*"],      # Autorise tous les headers (Content-Type, etc.)
+)
 
 # --- Schemas Pydantic ---
 class PatientInput(BaseModel):
@@ -42,11 +54,22 @@ feature_cols = joblib.load("models/feature_cols.pkl")
 print(f"Modele charge : {type(model).__name__}")
 print(f"Classes : {list(model.classes_)}")
 
-# Route de base
+# --- Routes ---
+
 @app.get("/health")
 def health_check():
     """Verification de l'etat de l'API."""
     return {"status": "ok", "message": "SenSante API is running"}
+
+@app.get("/model-info")
+def get_model_info():
+    """Renvoie les informations techniques du modèle chargé."""
+    return {
+        "model_type": type(model).__name__,
+        "n_estimators": model.n_estimators,
+        "classes": list(model.classes_),
+        "n_features": model.n_features_in_
+    }
 
 @app.post("/predict", response_model=DiagnosticOutput)
 def predict(patient: PatientInput):
