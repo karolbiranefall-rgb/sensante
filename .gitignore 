@@ -1,3 +1,4 @@
 # Fichiers temporaires matplotlib
 *.png
-!figures/*.png.env
+!figures/*.png
+.env
